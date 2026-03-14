@@ -108,71 +108,25 @@ function Hero() {
 function PhoneMockup() {
   return (
     <div className="phone-wrap">
-      <div className="phone">
-        <div className="phone-screen">
-          <div className="phone-status">9:41</div>
-          <div className="phone-header">
-            <div className="phone-user">
-              <div className="phone-avatar" />
-              <span>Good Morning, Alex</span>
-            </div>
-            <svg className="phone-bell" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-          </div>
-          <div className="phone-wallet">
-            <div className="phone-wallet-top">
-              <span>Main Wallet</span>
-              <span className="phone-wallet-balance">$838,593.00</span>
-              <span className="phone-wallet-change positive">+1.30% ($1,590)</span>
-            </div>
-          </div>
-          <div className="phone-actions">
-            {['Send', 'Receive', 'Buy', 'Swap'].map((label) => (
-              <div key={label} className="phone-action">
-                <div className="phone-action-icon" />
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="phone-cards">
-            <div className="phone-card">
-              <div className="phone-card-icon btc" />
-              <span className="phone-card-name">Bitcoin</span>
-              <span className="phone-card-value">$685,395.00</span>
-              <span className="phone-card-pct positive">+1.00%</span>
-            </div>
-            <div className="phone-card">
-              <div className="phone-card-icon eth" />
-              <span className="phone-card-name">Ethereum</span>
-              <span className="phone-card-value">$109,847.68</span>
-              <span className="phone-card-pct negative">-2.70%</span>
-            </div>
-          </div>
-          <div className="phone-transactions">
-            <div className="phone-tx-header">
-              <span>My Transaction</span>
-              <a href="#all">See All →</a>
-            </div>
-            <div className="phone-tx-item">
-              <span>Send</span>
-              <span className="phone-tx-date">Jul 10, 2023 - 16.00</span>
-              <span className="phone-tx-amount negative">-$146,670.00</span>
-            </div>
-            <div className="phone-tx-item">
-              <span>Buy</span>
-              <span className="phone-tx-date">Jul 08, 2023 - 10.00</span>
-              <span className="phone-tx-amount negative">-$43,182.00</span>
-            </div>
-          </div>
-          <div className="phone-nav">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="phone-nav-dot" />
-            ))}
-          </div>
+      <form className="hero-form" onSubmit={(e) => e.preventDefault()}>
+        <div className="hero-form-field">
+          <label htmlFor="hero-name">Name</label>
+          <input id="hero-name" type="text" name="name" placeholder="Your name" required />
         </div>
-      </div>
+        <div className="hero-form-field">
+          <label htmlFor="hero-email">Email</label>
+          <input id="hero-email" type="email" name="email" placeholder="you@company.com" required />
+        </div>
+        <div className="hero-form-field">
+          <label htmlFor="hero-company">Company name</label>
+          <input id="hero-company" type="text" name="company" placeholder="Company name" required />
+        </div>
+        <div className="hero-form-field">
+          <label htmlFor="hero-employees">Employee count</label>
+          <input id="hero-employees" type="number" name="employeeCount" placeholder="e.g. 50" min="1" required />
+        </div>
+        <button type="submit" className="hero-form-submit">Submit</button>
+      </form>
     </div>
   )
 }
@@ -254,12 +208,12 @@ function ProblemSection() {
 }
 
 const COMPARISON_ROWS = [
-  { aspect: 'Systems & processes', others: 'Ad-hoc, in people\'s heads', us: 'Documented SOPs and repeatable frameworks' },
-  { aspect: 'Owner dependency', others: 'Business runs only when you\'re there', us: 'Owner-independent operations that scale' },
-  { aspect: 'Financial clarity', others: 'Reactive, unclear numbers', us: 'Clear revenue, cost, and cash flow visibility' },
-  { aspect: 'Sales & marketing', others: 'Inconsistent funnels and channels', us: 'Structured funnels and measurable channels' },
-  { aspect: 'Implementation', others: 'One-off consulting, you figure it out', us: 'Hands-on rollout, training, and ongoing support' },
-  { aspect: 'Growth approach', others: 'Firefighting, hope it scales', us: 'Designed for scale with automation and systems' },
+  { area: 'Systems & processes', others: 'Ad-hoc, in people\'s heads', binzen: 'Documented SOPs and repeatable frameworks' },
+  { area: 'Owner dependency', others: 'Business runs only when you\'re there', binzen: 'Owner-independent operations that scale' },
+  { area: 'Financial clarity', others: 'Reactive, unclear numbers', binzen: 'Clear revenue, cost, and cash flow visibility' },
+  { area: 'Sales & marketing', others: 'Inconsistent funnels and channels', binzen: 'Structured funnels and measurable channels' },
+  { area: 'Implementation', others: 'One-off consulting, you figure it out', binzen: 'Hands-on rollout, training, and ongoing support' },
+  { area: 'Growth approach', others: 'Firefighting, hope it scales', binzen: 'Designed for scale with automation and systems' },
 ]
 
 function ComparisonTableSection() {
@@ -286,19 +240,19 @@ function ComparisonTableSection() {
             </thead>
             <tbody>
               {COMPARISON_ROWS.map((row) => (
-                <tr key={row.aspect} className="comparison-row">
-                  <td className="comparison-td comparison-td-aspect">{row.aspect}</td>
+                <tr key={row.area} className="comparison-row">
+                  <td className="comparison-td comparison-td-aspect">{row.area}</td>
                   <td className="comparison-td comparison-td-others">
-                    <span className="comparison-icon comparison-icon-cross" aria-hidden>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span className="comparison-cell-inner">
+                      <span className="comparison-icon comparison-icon-cross" aria-hidden>✗</span>
+                      <span className="comparison-cell-text">{row.others}</span>
                     </span>
-                    <span className="comparison-cell-text">{row.others}</span>
                   </td>
                   <td className="comparison-td comparison-td-us">
-                    <span className="comparison-icon comparison-icon-tick" aria-hidden>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span className="comparison-cell-inner">
+                      <span className="comparison-icon comparison-icon-tick" aria-hidden>✓</span>
+                      <span className="comparison-cell-text">{row.binzen}</span>
                     </span>
-                    <span className="comparison-cell-text">{row.us}</span>
                   </td>
                 </tr>
               ))}
@@ -542,11 +496,11 @@ function ProgramsSection() {
 }
 
 const WHO_THIS_IS_FOR = [
-  'Struggling businesses',
-  'Profitable businesses',
-  'Established businesses',
-  'Legacy businesses',
-  'New entrepreneurs',
+  { title: 'Struggling businesses', icon: '📉', description: 'Need systems to stop the bleeding', highlight: false },
+  { title: 'Profitable businesses', icon: '📈', description: 'Ready to scale without chaos', highlight: false },
+  { title: 'Established businesses', icon: '🏛️', description: 'Want processes that outlast you', highlight: true },
+  { title: 'Legacy businesses', icon: '🏆', description: 'Building something that endures', highlight: false },
+  { title: 'New entrepreneurs', icon: '🚀', description: 'Starting right from day one', highlight: false },
 ]
 
 function WhoThisIsForSection() {
@@ -557,12 +511,21 @@ function WhoThisIsForSection() {
         <p className="who-this-for-subtitle">
           Whether you&apos;re just starting or already running a business, our systems help you scale.
         </p>
-        <div className="who-this-for-arc" role="list">
-          {WHO_THIS_IS_FOR.map((segment, index) => (
-            <div key={segment} className="who-this-for-segment" role="listitem" style={{ '--i': index }}>
-              <span className="who-this-for-segment-num" aria-hidden>{String(index + 1).padStart(2, '0')}</span>
-              <span className="who-this-for-segment-label">{segment}</span>
-            </div>
+        <div className="who-this-for-cards" role="list">
+          {WHO_THIS_IS_FOR.map((card, index) => (
+            <article
+              key={card.title}
+              className={`who-this-for-card${card.highlight ? ' who-this-for-card--highlight' : ''}`}
+              role="listitem"
+            >
+              <span className="who-this-for-card-num" aria-hidden>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="who-this-for-card-line" aria-hidden />
+              <span className="who-this-for-card-icon" aria-hidden>{card.icon}</span>
+              <h3 className="who-this-for-card-title">{card.title}</h3>
+              <p className="who-this-for-card-desc">{card.description}</p>
+            </article>
           ))}
         </div>
       </div>
@@ -599,10 +562,10 @@ function TransformationResultsSection() {
 }
 
 const HOW_IT_WORKS_STEPS = [
-  { step: 1, label: 'Book business analysis' },
-  { step: 2, label: '21-day business evaluation' },
-  { step: 3, label: 'Receive system roadmap' },
-  { step: 4, label: 'Implement business framework' },
+  { step: 1, label: 'Book business analysis', icon: '📋', description: 'Schedule your deep-dive audit session' },
+  { step: 2, label: '21-day business evaluation', icon: '🔍', description: 'We analyse every part of your business' },
+  { step: 3, label: 'Receive system roadmap', icon: '🗺️', description: 'Get your custom growth & systems plan' },
+  { step: 4, label: 'Implement business framework', icon: '⚙️', description: 'We implement, train & support your team' },
 ]
 
 function HowItWorksSection() {
@@ -613,36 +576,85 @@ function HowItWorksSection() {
         <p className="how-it-works-subtitle">
           A simple path from analysis to implementation. We start with a 21-day evaluation.
         </p>
-        <div className="how-it-works-timeline">
-          {HOW_IT_WORKS_STEPS.map(({ step, label }) => (
-            <div key={step} className="how-it-works-node">
-              <div className="how-it-works-dot">
-                <span className="how-it-works-number">{step}</span>
+        <div className="how-it-works-cards">
+          {HOW_IT_WORKS_STEPS.flatMap(({ step, label, icon, description }, index) => [
+            <article key={step} className="how-it-works-card">
+              <span className="how-it-works-card-bg-num" aria-hidden>
+                {String(step).padStart(2, '0')}
+              </span>
+              <span className="how-it-works-step-badge">
+                <span className="how-it-works-step-dot" aria-hidden />
+                Step {step}
+              </span>
+              <div className="how-it-works-icon-wrap">
+                <span className="how-it-works-icon" aria-hidden>{icon}</span>
               </div>
-              <div className="how-it-works-content">
-                <span className="how-it-works-step-label">Step {step}</span>
-                <span className="how-it-works-label">{label}</span>
-              </div>
-            </div>
-          ))}
+              <h3 className="how-it-works-label">{label}</h3>
+              <p className="how-it-works-desc">{description}</p>
+            </article>,
+            ...(index < HOW_IT_WORKS_STEPS.length - 1
+              ? [<div key={`arrow-${step}`} className="how-it-works-arrow" aria-hidden>→</div>]
+              : []),
+          ])}
+        </div>
+        <div className="how-it-works-cta-wrap">
+          <p className="how-it-works-cta-text">Ready to get started?</p>
+          <a href="#analysis" className="how-it-works-cta-btn">Book Your Business Analysis →</a>
         </div>
       </div>
     </section>
   )
 }
 
+const PRICING_INCLUDES = [
+  'Deep-dive business audit',
+  'Systems & process mapping',
+  'Revenue & cash flow analysis',
+  'Sales & marketing review',
+  'Custom growth roadmap',
+  '60-min strategy session',
+]
+
 function PricingOfferSection() {
   return (
     <section className="pricing-offer-section">
-      <div className="pricing-offer-ribbon-wrap">
-        <span className="pricing-offer-ribbon">Special Offer</span>
-        <div className="pricing-offer-strip">
-          <div className="pricing-offer-inner">
-            <h2 className="pricing-offer-title">Business System Analysis</h2>
-            <p className="pricing-offer-price">₹6,875 + GST <span className="pricing-offer-note">(limited offer)</span></p>
-            <p className="pricing-offer-original">Original price much higher.</p>
-            <a href="#analysis" className="pricing-offer-btn">Get Business Analysis</a>
+      <div className="pricing-offer-glow" aria-hidden />
+      <div className="pricing-offer-card">
+        <div className="pricing-offer-card-deco pricing-offer-card-deco--tr" aria-hidden />
+        <div className="pricing-offer-card-deco pricing-offer-card-deco--bl" aria-hidden />
+        <div className="pricing-offer-inner">
+          <div className="pricing-offer-badge-wrap">
+            <span className="pricing-offer-badge-glow" aria-hidden />
+            <span className="pricing-offer-ribbon">Special Offer</span>
           </div>
+          <h2 className="pricing-offer-title">Business System Analysis</h2>
+          <p className="pricing-offer-subtitle">
+            Everything you need to fix, systemise & scale your business
+          </p>
+          <div className="pricing-offer-divider" aria-hidden />
+          <ul className="pricing-offer-list">
+            {PRICING_INCLUDES.map((item) => (
+              <li key={item} className="pricing-offer-list-item">
+                <span className="pricing-offer-check" aria-hidden>✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="pricing-offer-price-block">
+            <p className="pricing-offer-original-line">
+              <span className="pricing-offer-original">₹15,000</span>
+              <span className="pricing-offer-original-label">original price</span>
+            </p>
+            <p className="pricing-offer-price-line">
+              <span className="pricing-offer-price">₹6,875</span>
+              <span className="pricing-offer-note">+ GST</span>
+            </p>
+            <span className="pricing-offer-save">Limited Offer — Save 54%</span>
+          </div>
+          <a href="#analysis" className="pricing-offer-btn">Get My Business Analysis →</a>
+          <p className="pricing-offer-trust">
+            🔒 Secure payment · No hidden charges · Invoice provided
+          </p>
         </div>
       </div>
     </section>
@@ -952,8 +964,9 @@ const FOOTER_LINKS = {
 
 function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="footer-inner">
+    <div className="footer-wrap">
+      <footer className="site-footer">
+        <div className="footer-inner">
         <div className="footer-brand">
           <div className="footer-logo">
             <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -979,6 +992,7 @@ function Footer() {
         </nav>
       </div>
     </footer>
+    </div>
   )
 }
 
