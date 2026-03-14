@@ -1,5 +1,36 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
+
+function useGrainCanvas(canvasRef) {
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const resize = () => {
+      const w = canvas.parentElement.offsetWidth || 1
+      const h = canvas.parentElement.offsetHeight || 1
+      const bw = Math.floor(w * dpr)
+      const bh = Math.floor(h * dpr)
+      canvas.width = bw
+      canvas.height = bh
+      canvas.style.width = w + 'px'
+      canvas.style.height = h + 'px'
+      const imageData = ctx.createImageData(bw, bh)
+      const data = imageData.data
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.floor(Math.random() * 256)
+        data[i] = data[i + 1] = data[i + 2] = v
+        data[i + 3] = 255
+      }
+      ctx.putImageData(imageData, 0, 0)
+    }
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas.parentElement)
+    return () => ro.disconnect()
+  }, [canvasRef])
+}
 
 function Logo() {
   return (
@@ -496,37 +527,81 @@ function ProgramsSection() {
 }
 
 const WHO_THIS_IS_FOR = [
-  { title: 'Struggling businesses', icon: '📉', description: 'Need systems to stop the bleeding', highlight: false },
-  { title: 'Profitable businesses', icon: '📈', description: 'Ready to scale without chaos', highlight: false },
-  { title: 'Established businesses', icon: '🏛️', description: 'Want processes that outlast you', highlight: true },
-  { title: 'Legacy businesses', icon: '🏆', description: 'Building something that endures', highlight: false },
-  { title: 'New entrepreneurs', icon: '🚀', description: 'Starting right from day one', highlight: false },
+  { title: 'Struggling businesses', icon: '📉', description: 'Need systems to stop the bleeding and get stable fast.', tag: 'Operations', highlight: false },
+  { title: 'Established businesses', icon: '🏛️', description: 'Want processes that outlast you and run without constant input.', tag: 'Systems', highlight: true },
+  { title: 'Profitable businesses', icon: '📈', description: 'Ready to scale without chaos — need structure to grow.', tag: 'Growth', highlight: false },
+  { title: 'Legacy businesses', icon: '🏆', description: 'Building something that endures — need systems that outlast the founders and scale independently.', tag: 'Legacy', highlight: false },
+  { title: 'New entrepreneurs', icon: '🚀', description: 'Starting right from day one — build it properly from the ground up with the right foundations.', tag: 'Startup', highlight: false },
 ]
 
 function WhoThisIsForSection() {
+  const row1 = WHO_THIS_IS_FOR.slice(0, 3)
+  const row2 = WHO_THIS_IS_FOR.slice(3, 5)
+  const renderCell = (item, index, globalIndex, isLastInRow) => (
+    <article
+      key={item.title}
+      className={`who-this-for-cell${item.highlight ? ' who-this-for-cell--highlight' : ''}${isLastInRow ? ' who-this-for-cell--last' : ''}`}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}
+    >
+      {item.highlight && <div className="who-this-for-cell-gold-bar" aria-hidden />}
+      <div className="who-this-for-cell-top">
+        <span className="who-this-for-cell-num" aria-hidden>
+          {String(globalIndex + 1).padStart(2, '0')}
+        </span>
+        <div className="who-this-for-cell-icon" aria-hidden>{item.icon}</div>
+      </div>
+      <h3 className="who-this-for-cell-title">
+        {item.title}
+        {item.highlight && (
+          <span className="who-this-for-cell-popular">Popular</span>
+        )}
+      </h3>
+      <p className="who-this-for-cell-desc">{item.description}</p>
+      <div className="who-this-for-cell-footer">
+        <span className="who-this-for-cell-explore">Explore →</span>
+        <span className="who-this-for-cell-tag">{item.tag}</span>
+      </div>
+    </article>
+  )
   return (
     <section className="who-this-for-section">
       <div className="who-this-for-inner">
-        <h2 className="who-this-for-title">Who This Is For</h2>
-        <p className="who-this-for-subtitle">
-          Whether you&apos;re just starting or already running a business, our systems help you scale.
-        </p>
-        <div className="who-this-for-cards" role="list">
-          {WHO_THIS_IS_FOR.map((card, index) => (
-            <article
-              key={card.title}
-              className={`who-this-for-card${card.highlight ? ' who-this-for-card--highlight' : ''}`}
-              role="listitem"
-            >
-              <span className="who-this-for-card-num" aria-hidden>
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <span className="who-this-for-card-line" aria-hidden />
-              <span className="who-this-for-card-icon" aria-hidden>{card.icon}</span>
-              <h3 className="who-this-for-card-title">{card.title}</h3>
-              <p className="who-this-for-card-desc">{card.description}</p>
-            </article>
-          ))}
+        <header className="who-this-for-header">
+          <span className="who-this-for-pill">
+            <span className="who-this-for-pill-dot" aria-hidden />
+            Who this is for
+          </span>
+          <h2 className="who-this-for-title">Built for every stage</h2>
+          <p className="who-this-for-subtitle">
+            Whether you&apos;re just starting or already running a business — we have a system for it.
+          </p>
+        </header>
+        <div className="who-this-for-grid-wrap">
+          <div className="who-this-for-row who-this-for-row-1">
+            {row1.map((item, i) => renderCell(item, i, i, i === row1.length - 1))}
+          </div>
+          <div className="who-this-for-row who-this-for-row-2">
+            {row2.map((item, i) => renderCell(item, i, 3 + i, i === row2.length - 1))}
+          </div>
+        </div>
+        <div className="who-this-for-cta">
+          <p className="who-this-for-cta-text">Not sure where you fit?</p>
+          <button
+            type="button"
+            className="who-this-for-cta-btn"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#ca8a04'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#eab308'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }}
+          >
+            Talk to us →
+          </button>
         </div>
       </div>
     </section>
@@ -776,20 +851,86 @@ function TransactionCustodySection({ useOurProductsImage }) {
   )
 }
 
+function TestimonialCompanyLogo({ company }) {
+  if (company === 'PayPal') {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 4.643-5.813 4.643h-1.28c-.39 0-.72.283-.78.67l-.54 3.44-.156.996a.427.427 0 0 0 .421.495h2.959c.453 0 .836-.328.907-.775l.037-.194.72-4.55.046-.25a.919.919 0 0 1 .907-.775h.572c3.693 0 6.584-1.498 7.43-5.832.353-1.813.17-3.326-.732-4.39z" fill="#ffffff" opacity="0.9" />
+        </svg>
+        <span style={{ color: 'white', fontWeight: 700, fontSize: 15, letterSpacing: '0.02em', opacity: 0.9 }}>
+          PayPal
+        </span>
+      </div>
+    )
+  }
+  if (company === 'Wise') {
+    return (
+      <span style={{ color: 'white', fontWeight: 800, fontSize: 15, fontStyle: 'italic', opacity: 0.85 }}>
+        Wise
+      </span>
+    )
+  }
+  if (company === 'Google Pay') {
+    return (
+      <span style={{ color: 'white', fontWeight: 700, fontSize: 15, opacity: 0.85 }}>
+        Google <span style={{ color: '#eab308' }}>Pay</span>
+      </span>
+    )
+  }
+  if (company === 'Samsung Pay') {
+    return (
+      <span style={{ color: 'white', fontWeight: 700, fontSize: 15, opacity: 0.85 }}>
+        Samsung Pay
+      </span>
+    )
+  }
+  if (company === 'TrustPay') {
+    return (
+      <span style={{ color: '#eab308', fontWeight: 700, fontSize: 15, letterSpacing: '0.05em' }}>
+        TrustPay
+      </span>
+    )
+  }
+  return null
+}
+
 const TESTIMONIAL = {
   quote: 'A great platform for making transactions with a complete and very beautiful crypto service also easy to use and very secure. Try it now and you won\'t hesitate!',
   author: 'Daniel Schulman',
-  title: 'CEO - PayPal',
+  company: 'PayPal',
 }
 
-const PAYMENT_LOGO_NAMES = ['PayPal', 'Wise', 'TrustPay', 'Google Pay', 'Samsung Pay']
+const STRIP_LOGO_CONFIG = [
+  { name: 'PayPal', alt: 'PayPal', src: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/paypal.svg', type: 'img' },
+  { name: 'Wise', alt: 'Wise', src: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/wise.svg', type: 'img' },
+  { name: 'TrustPay', type: 'text' },
+  { name: 'Google Pay', alt: 'Google Pay', src: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlepay.svg', type: 'img' },
+  { name: 'Samsung Pay', alt: 'Samsung Pay', src: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/samsung.svg', type: 'img' },
+]
+
+function StripLogoItem({ item }) {
+  if (item.type === 'text') {
+    return (
+      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 15, fontWeight: 700, letterSpacing: '0.08em', fontFamily: 'monospace' }}>
+        TRUSTPAY
+      </span>
+    )
+  }
+  return (
+    <img
+      src={item.src}
+      alt={item.alt}
+      style={{ height: 28, width: 'auto', filter: 'brightness(0) invert(1)' }}
+    />
+  )
+}
 
 function WhoUsesSection() {
   const [, setActiveSlide] = useState(0)
 
   return (
     <section className="who-uses">
-      <div className="who-uses-bg-blob" aria-hidden />
       <div className="who-uses-inner">
         <div className="who-uses-top">
           <div className="who-uses-heading-block">
@@ -803,7 +944,9 @@ function WhoUsesSection() {
               <div className="who-uses-author-row">
         <div>
                   <div className="who-uses-author">{TESTIMONIAL.author}</div>
-                  <div className="who-uses-author-title">{TESTIMONIAL.title}</div>
+                  <div className="who-uses-author-title">
+                  <TestimonialCompanyLogo company={TESTIMONIAL.company} />
+                </div>
                 </div>
                 <div className="who-uses-stars" aria-label="5 out of 5 stars">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -821,7 +964,9 @@ function WhoUsesSection() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h19M12 5l7 7-7 7"/></svg>
             </button>
             <div className="who-uses-figure who-uses-figure-main">
-              <img src="/avatr.png" alt="" className="who-uses-avatar-img" />
+              <div className="who-uses-avatar-wrap">
+                <img src="/avatr.png" alt="" className="who-uses-avatar-img" />
+              </div>
             </div>
             <div className="who-uses-figure who-uses-figure-secondary">
               <div className="who-uses-avatar-placeholder" />
@@ -829,8 +974,10 @@ function WhoUsesSection() {
           </div>
         </div>
         <div className="who-uses-logos">
-          {PAYMENT_LOGO_NAMES.map((name) => (
-            <div key={name} className="who-uses-logo-item">{name}</div>
+          {STRIP_LOGO_CONFIG.map((item) => (
+            <div key={item.name} className="who-uses-logo-item">
+              <StripLogoItem item={item} />
+            </div>
           ))}
         </div>
       </div>
@@ -996,7 +1143,85 @@ function Footer() {
   )
 }
 
+function WhatsAppFloat() {
+  return (
+    <a
+      href="https://wa.me/919656349000"
+      style={{
+        position: 'fixed',
+        bottom: '32px',
+        right: '32px',
+        zIndex: 9999,
+        width: '70px',
+        height: '70px',
+        borderRadius: '50%',
+        backgroundColor: '#25D366',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 6px 28px rgba(37,211,102,0.5)',
+        transition: 'all 0.3s ease',
+        cursor: 'pointer',
+      }}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.1)'
+        e.currentTarget.style.boxShadow = '0 8px 36px rgba(37,211,102,0.7)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)'
+        e.currentTarget.style.boxShadow = '0 6px 28px rgba(37,211,102,0.5)'
+      }}
+    >
+      <span
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          backgroundColor: '#25D366',
+          animation: 'whatsapp-pulse 2s ease-out infinite',
+          opacity: 0.4,
+          zIndex: -1,
+        }}
+        aria-hidden
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="38"
+        height="38"
+        viewBox="0 0 24 24"
+        fill="white"
+        aria-hidden
+      >
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.857L.054 23.447a.75.75 0 0 0 .916.99l5.782-1.516A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.708 9.708 0 0 1-4.953-1.355l-.355-.211-3.43.899.916-3.338-.231-.368A9.71 9.71 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z" />
+      </svg>
+    </a>
+  )
+}
+
 export default function App() {
+  const [showFormModal, setShowFormModal] = useState(false)
+
+  useEffect(() => {
+    localStorage.removeItem('formModalShown') // TEMPORARY: remove this line after confirming modal works
+    const alreadyShown = localStorage.getItem('formModalShown')
+    if (alreadyShown) return
+    const timer = setTimeout(() => {
+      console.log('Modal should show now')
+      setShowFormModal(true)
+    }, 1000) // TEMPORARY: change back to 5000 after confirming
+    return () => clearTimeout(timer)
+  }, [])
+
+  const closeFormModal = () => {
+    setShowFormModal(false)
+    localStorage.setItem('formModalShown', 'true')
+  }
+
   return (
     <>
       <Header />
@@ -1019,6 +1244,142 @@ export default function App() {
         <GrowthInvestSection />
       </main>
       <Footer />
+      <WhatsAppFloat />
+      {showFormModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 999999,
+            backgroundColor: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            animation: 'fadeInModal 0.4s ease forwards',
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeFormModal()
+          }}
+        >
+          <div
+            className="form-modal-inner"
+            style={{
+              position: 'relative',
+              backgroundColor: '#111108',
+              border: '1px solid rgba(234,179,8,0.25)',
+              borderRadius: '24px',
+              padding: '40px',
+              width: '100%',
+              maxWidth: '480px',
+              boxShadow: '0 24px 60px rgba(0,0,0,0.6), 0 0 40px rgba(234,179,8,0.08)',
+              animation: 'slideUpModal 0.4s cubic-bezier(0.16,1,0.3,1) forwards',
+              overflowY: 'auto',
+              maxHeight: '90vh',
+            }}
+          >
+            <button
+              type="button"
+              onClick={closeFormModal}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.5)',
+                fontSize: '16px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(234,179,8,0.15)'
+                e.currentTarget.style.color = '#eab308'
+                e.currentTarget.style.borderColor = 'rgba(234,179,8,0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'
+                e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+              }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+            <div style={{ marginBottom: '24px' }}>
+              <p style={{
+                color: '#eab308',
+                fontSize: '11px',
+                fontWeight: '700',
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                marginBottom: '8px',
+              }}>
+                🔥 Limited Offer
+              </p>
+              <h3 style={{
+                color: 'white',
+                fontSize: '22px',
+                fontWeight: '900',
+                lineHeight: '1.2',
+                marginBottom: '6px',
+              }}>
+                Get Your Free Business Analysis
+              </h3>
+              <p style={{
+                color: 'rgba(255,255,255,0.4)',
+                fontSize: '13px',
+                lineHeight: '1.5',
+              }}>
+                Takes 30 seconds. No commitment required.
+              </p>
+            </div>
+            <form
+              className="form-modal-form"
+              onSubmit={(e) => {
+                e.preventDefault()
+                closeFormModal()
+              }}
+            >
+              <div style={{ marginBottom: '12px' }}>
+                <label htmlFor="modal-name" style={{ display: 'block', color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '4px' }}>Name</label>
+                <input id="modal-name" type="text" name="name" placeholder="Your name" required className="form-modal-input" />
+              </div>
+              <div style={{ marginBottom: '12px' }}>
+                <label htmlFor="modal-email" style={{ display: 'block', color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '4px' }}>Email</label>
+                <input id="modal-email" type="email" name="email" placeholder="you@company.com" required className="form-modal-input" />
+              </div>
+              <div style={{ marginBottom: '12px' }}>
+                <label htmlFor="modal-company" style={{ display: 'block', color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '4px' }}>Company name</label>
+                <input id="modal-company" type="text" name="company" placeholder="Company name" required className="form-modal-input" />
+              </div>
+              <div style={{ marginBottom: '12px' }}>
+                <label htmlFor="modal-employees" style={{ display: 'block', color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '4px' }}>Employee count</label>
+                <input id="modal-employees" type="number" name="employeeCount" placeholder="e.g. 50" min={1} required className="form-modal-input" />
+              </div>
+              <button type="submit" className="form-modal-submit">
+                Submit
+              </button>
+            </form>
+            <p style={{
+              textAlign: 'center',
+              fontSize: '11px',
+              color: 'rgba(255,255,255,0.2)',
+              marginTop: '12px',
+              letterSpacing: '0.05em',
+            }}>
+              🔒 No spam · No hidden charges · 100% Free
+            </p>
+          </div>
+        </div>
+      )}
     </>
   )
 }
