@@ -1,3 +1,24 @@
+/* Responsive base – prevent horizontal scroll, consistent box model */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Layout */
 .hero-inner,
 .partners-inner {
@@ -18,6 +39,32 @@
   position: relative;
   z-index: 10;
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 16px;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
+  .logo svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .btn, .btn-primary {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
 }
 
 .logo {
@@ -206,6 +253,23 @@
   .hero-visual {
     order: 0;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 16px 12px 20px;
+  }
+  .hero-card {
+    width: calc(100% - 24px);
+    margin: 0 12px;
+    padding: 20px 16px;
+  }
+  .hero-inner {
+    padding: 0 12px;
+  }
+  .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
   }
 }
 
@@ -3377,5 +3441,129 @@
   }
   .phone-screen {
     min-height: 400px;
+  }
+}
+
+/* ========== Responsive: tablet (768px) – reduce vertical padding ========== */
+@media (max-width: 768px) {
+  .problem-section {
+    padding: 64px 5%;
+  }
+  .programs-section {
+    padding: 64px 5%;
+  }
+  .bizzen-system-section {
+    padding: 56px 5%;
+  }
+  .comparison-section {
+    padding: 64px 5%;
+  }
+  .how-it-works-section {
+    padding: 64px 5%;
+  }
+  .pricing-offer-section {
+    padding: 64px 5%;
+  }
+  .final-cta-section {
+    padding: 64px 5%;
+  }
+}
+
+/* ========== Responsive: small screens (480px) – section padding & layout ========== */
+@media (max-width: 480px) {
+  .comparison-section {
+    padding: 48px 16px;
+  }
+  .comparison-container {
+    padding: 0 4px;
+  }
+  .comparison-table-wrap {
+    margin: 0 -4px;
+  }
+  .problem-section {
+    padding: 48px 16px;
+  }
+  .problem-section-inner {
+    padding: 0 8px;
+  }
+  .programs-section {
+    padding: 48px 16px;
+  }
+  .bizzen-system-section {
+    padding: 48px 16px;
+  }
+  .what-we-fix-section {
+    padding: 48px 16px;
+  }
+  .what-we-fix-inner {
+    padding: 0 8px;
+  }
+  .who-this-for-section {
+    padding: 56px 16px;
+  }
+  .who-this-for-inner {
+    padding: 0 8px;
+  }
+  .who-this-for-cards {
+    max-width: 100%;
+  }
+  .how-it-works-section {
+    padding: 56px 16px;
+  }
+  .how-it-works-inner {
+    padding: 0 1rem;
+  }
+  .how-it-works-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .pricing-offer-section {
+    padding: 56px 16px;
+  }
+  .pricing-offer-card {
+    padding: 1.75rem 1.25rem;
+  }
+  .final-cta-section {
+    padding: 56px 16px;
+  }
+  .final-cta-inner {
+    padding: 0 8px;
+  }
+  .final-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 14px 24px;
+  }
+  .transformation-results-section {
+    padding: 48px 16px;
+  }
+  .faq-section {
+    padding: 48px 16px;
+  }
+  .faq-inner {
+    padding: 0 8px;
+  }
+  .growth-invest {
+    padding: 40px 16px 48px;
+  }
+  .footer-wrap {
+    padding: 0 16px 24px;
+  }
+  .site-footer {
+    padding: 2rem 1.25rem;
+  }
+  .footer-nav {
+    gap: 24px 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-wrap {
+    padding: 0 20px 24px;
+  }
+  .site-footer {
+    padding: 2.25rem 1.5rem;
   }
 }
